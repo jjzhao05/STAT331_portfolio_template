@@ -1,6 +1,6 @@
 ---
 title: "STAT 331 Portfolio"
-author: "Your Name Goes Here"
+author: "Jonathan Zhao"
 format: 
   html: 
     self-contained: true
@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an __.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an B.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -24,12 +24,25 @@ execute:
 ```{r}
 #| label: wd-1-csv
 
+teacher_evals_compare <- read_csv(here("data", "teacher_evals.csv"))
+
+#Challenge 3 Question 1
+
 ```
 
 -   `xlsx`
 
 ```{r}
 #| label: wd-1-xlsx
+
+military <- read_xlsx(here::here("data", 
+                                 "gov_spending_per_capita.xlsx"), 
+                      sheet = "Share of Govt. spending", 
+                      skip  = 7, 
+                      n_max = 190,
+                      na = c(". .", "xxx" )
+                      )
+#Practice Activity 4 Question 3
 
 ```
 
@@ -38,12 +51,43 @@ execute:
 ```{r}
 #| label: wd-1-txt
 
+ages_mystery <- read_delim(file = here::here("Week2", "Check-ins", 
+"Ages_Data", "ages_mystery.txt"))
 ```
 
 **WD-2: I can select necessary columns from a dataset.**
 
 ```{r}
 #| label: wd-2
+
+crime_scene_report |>
+    filter(date %in% "20180115",
+           type %in% "murder",
+           city %in% "SQL City")
+
+witnessA <- person |>
+  filter(address_street_name %in% "Northwestern Dr") |>
+  arrange(desc(address_number)) |>
+  slice(1)
+
+witnessB <- person |>
+  filter(address_street_name %in% "Franklin Ave", 
+         str_detect(name, "Annabel"))
+
+witness_interviews <- bind_rows(witnessA, witnessB) |>
+  rename(person_id = id) |>
+  inner_join(interview, by = "person_id")
+
+get_fit_now_member |>
+  filter(membership_status == 'gold', str_detect(id, "^48Z")) |>
+  left_join(get_fit_now_check_in, by = c("id" = "membership_id")) |> 
+  filter(as.Date(as.character(check_in_date), format = "%Y%m%d") == ymd("2018-01-09")) |>
+  left_join(person, by = c("person_id" = "id")) |>
+  left_join(drivers_license, by = c("license_id" = "id")) |>
+  filter(str_detect(plate_number, "H42W")) |>
+  select(id, name.x, plate_number, gender)
+
+#Lab 5
 
 ```
 
@@ -54,6 +98,17 @@ execute:
 ```{r}
 #| label: wd-3-numeric
 
+table <- ca_childcare |>
+  filter(study_year %in% c(2008,2018)) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018)) |>
+  pivot_wider(names_from = study_year, values_from = median_income) |>
+  rename("Year2008" = `2008`,
+         "Year2018" = `2018`) |>
+  arrange(desc(`2018`))
+
+#Lab 4 Question 4
+#Revision: Changing the name of the variables, because the name of 2008 or 2018 is very confusing to someone who did not work with the code
 ```
 
 -   character -- specifically a string (example must use functions from **stringr**)
@@ -61,6 +116,35 @@ execute:
 ```{r}
 #| label: wd-3-string
 
+crime_scene_report |>
+    filter(date %in% "20180115",
+           type %in% "murder",
+           city %in% "SQL City")
+
+witnessA <- person |>
+  filter(address_street_name %in% "Northwestern Dr") |>
+  arrange(desc(address_number)) |>
+  slice(1)
+
+witnessB <- person |>
+  filter(address_street_name %in% "Franklin Ave", 
+         str_detect(name, "Annabel"))
+
+witness_interviews <- bind_rows(witnessA, witnessB) |>
+  rename(person_id = id) |>
+  inner_join(interview, by = "person_id")
+
+get_fit_now_member |>
+  filter(membership_status == 'gold', str_detect(id, "^48Z")) |>
+  left_join(get_fit_now_check_in, by = c("id" = "membership_id")) |> 
+  filter(as.Date(as.character(check_in_date), format = "%Y%m%d") == ymd("2018-01-09")) |>
+  left_join(person, by = c("person_id" = "id")) |>
+  left_join(drivers_license, by = c("license_id" = "id")) |>
+  filter(str_detect(plate_number, "H42W")) |>
+  select(id, name.x, plate_number, gender)
+
+#Lab 5
+#Revision: The original read the date as an integer, but this was changed in order to utilize lubridate
 ```
 
 -   factor
@@ -75,6 +159,35 @@ execute:
 ```{r}
 #| label: wd-3-date
 
+crime_scene_report |>
+    filter(date %in% "20180115",
+           type %in% "murder",
+           city %in% "SQL City")
+
+witnessA <- person |>
+  filter(address_street_name %in% "Northwestern Dr") |>
+  arrange(desc(address_number)) |>
+  slice(1)
+
+witnessB <- person |>
+  filter(address_street_name %in% "Franklin Ave", 
+         str_detect(name, "Annabel"))
+
+witness_interviews <- bind_rows(witnessA, witnessB) |>
+  rename(person_id = id) |>
+  inner_join(interview, by = "person_id")
+
+get_fit_now_member |>
+  filter(membership_status == 'gold', str_detect(id, "^48Z")) |>
+  left_join(get_fit_now_check_in, by = c("id" = "membership_id")) |> 
+  filter(as.Date(as.character(check_in_date), format = "%Y%m%d") == ymd("2018-01-09")) |>
+  left_join(person, by = c("person_id" = "id")) |>
+  left_join(drivers_license, by = c("license_id" = "id")) |>
+  filter(str_detect(plate_number, "H42W")) |>
+  select(id, name.x, plate_number, gender)
+
+#Lab 5
+#Revision: The original read the date as an integer, but this was changed in order to utilize lubridate
 ```
 
 **WD-4: I can modify existing variables and create new variables in a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -91,12 +204,45 @@ execute:
 ```{r}
 #| label: wd-4-string
 
+teacher_evals_compare <- read_csv(here("data", "teacher_evals.csv")) |>
+  mutate(SET_level = if_else(
+          SET_score_avg >= 4, "excellent", "standard"),
+        sen_level = if_else(
+          seniority <= 4, "junior", "senior")) |>
+  select(course_id, SET_level, sen_level)
+
+#Challenge 3 Lab 1
 ```
 
 -   factor (example must use functions from **forcats**)
 
 ```{r}
 #| label: wd-4-factor
+
+mutate(region = fct_collapse(county_name,
+                              "Superior California" = c("Butte County", "Colusa County", "Del Norte County", 
+                                                        "Glenn County", "Humboldt County", "Lassen County", 
+                                                        "Modoc County", "Plumas County", "Shasta County", 
+                                                        "Sierra County", "Siskiyou County", "Tehama County", 
+                                                        "Trinity County"),
+                              "San Francisco Bay Area" = c("Alameda County", "Contra Costa County", "Marin County", 
+                                                           "Napa County", "San Francisco County", "San Mateo County",
+                                                           "Santa Clara County", "Solano County", "Sonoma County"),
+                              "Northern San Joaquin Valley" = c("San Joaquin County", "Stanislaus County", "Merced County"),
+                              "Sacramento Area" = c("El Dorado County", "Placer County", "Sacramento County", 
+                                                    "Sutter County", "Yolo County", "Yuba County"),
+                              "Central Coast" = c("Monterey County", "San Benito County", "San Luis Obispo County",
+                                                  "Santa Barbara County", "Santa Cruz County", "Ventura County"),
+                              "Northern California & Central Sierra" = c("Alpine County", "Amador County", 
+                                                                          "Calaveras County", "Inyo County", "Mariposa County", 
+                                                                          "Mono County", "Nevada County", "Tuolumne County"),
+                               "Southern California" = c("Los Angeles County", "Orange County", "Riverside County", 
+                                                         "San Bernardino County", "San Diego County", "Imperial County"),
+                               "Central Valley" = c("Fresno County", "Kern County", "Kings County", "Madera County", "Tulare County"),
+                               "Inland Empire" = c("Riverside County", "San Bernardino County"),
+                               "San Diego Area" = c("San Diego County", "Imperial County")))
+
+#Lab 4 Question 3
 
 ```
 
@@ -105,6 +251,35 @@ execute:
 ```{r}
 #| label: wd-4-date
 
+crime_scene_report |>
+    filter(date %in% "20180115",
+           type %in% "murder",
+           city %in% "SQL City")
+
+witnessA <- person |>
+  filter(address_street_name %in% "Northwestern Dr") |>
+  arrange(desc(address_number)) |>
+  slice(1)
+
+witnessB <- person |>
+  filter(address_street_name %in% "Franklin Ave", 
+         str_detect(name, "Annabel"))
+
+witness_interviews <- bind_rows(witnessA, witnessB) |>
+  rename(person_id = id) |>
+  inner_join(interview, by = "person_id")
+
+get_fit_now_member |>
+  filter(membership_status == 'gold', str_detect(id, "^48Z")) |>
+  left_join(get_fit_now_check_in, by = c("id" = "membership_id")) |> 
+  filter(as.Date(as.character(check_in_date), format = "%Y%m%d") == ymd("2018-01-09")) |>
+  left_join(person, by = c("person_id" = "id")) |>
+  left_join(drivers_license, by = c("license_id" = "id")) |>
+  filter(str_detect(plate_number, "H42W")) |>
+  select(id, name.x, plate_number, gender)
+
+#Lab 5
+#Revision: The original read the date as an integer, but this was changed in order to utilize lubridate
 ```
 
 **WD-5: I can use mutating joins to combine multiple dataframes.**
@@ -113,6 +288,12 @@ execute:
 
 ```{r}
 #| label: wd-5-left
+
+ca_childcare <- counties |>
+  filter(state_name == "California") |>
+  left_join(childcare_costs)
+
+#Lab 4 Question 2
 
 ```
 
@@ -127,6 +308,12 @@ execute:
 
 ```{r}
 #| label: wd-5-inner
+
+witness_interviews <- bind_rows(witnessA, witnessB) |>
+  rename(person_id = id) |>
+  inner_join(interview, by = "person_id")
+
+#Lab 5
 
 ```
 
@@ -151,6 +338,10 @@ execute:
 ```{r}
 #| label: wd-6-anti
 
+military_clean <- anti_join(military, cont_region, by = join_by(Country == Region))
+
+#PA 4 Question 4
+
 ```
 
 **WD-7: I can pivot dataframes from long to wide and visa versa**
@@ -160,6 +351,34 @@ execute:
 ```{r}
 #| label: wd-7-long
 
+ca_childcare |>
+  
+  rename(Infant = mc_infant,
+         Toddler = mc_toddler,
+         Preschool = mc_preschool) |>
+  
+  pivot_longer(cols = c(Infant, Toddler, Preschool), 
+               names_to = "age_group", 
+               values_to = "median_weekly_price") |>
+  
+  ggplot(mapping = aes(x = study_year, 
+                      y = median_weekly_price, 
+                      color = region)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth() +
+  facet_grid(.~age_group) +
+  labs(x = "Year",
+       y = "",
+       subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+       color = "Region") +
+  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
+  scale_y_continuous(breaks = seq(100, 500, by = 100)) +
+  theme_light() +
+  theme(aspect.ratio = 1, axis.text.x = element_text(size = 6),
+        legend.text = element_text(size = 8))
+
+#Lab 4 Question 6
+
 ```
 
 -   `pivot_wider()`
@@ -167,6 +386,17 @@ execute:
 ```{r}
 #| label: wd-7-wide
 
+table <- ca_childcare |>
+  filter(study_year %in% c(2008,2018)) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018)) |>
+  pivot_wider(names_from = study_year, values_from = median_income) |>
+  rename("Year2008" = `2008`,
+         "Year2018" = `2018`) |>
+  arrange(desc(`2018`))
+
+#Lab 4 Question 4
+#Revision: Changing the name of the variables, because the name of 2008 or 2018 is very confusing to someone who did not work with the code
 ```
 
 ## Reproducibility
@@ -175,6 +405,8 @@ execute:
 
 I've done this in the following provided assignments:
 
+Labs 1 - 5, Challenges 1 - 3
+
 **R-2: I can write well documented and tidy code.**
 
 -   Example of **ggplot2** plotting
@@ -182,6 +414,33 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-1
 
+ca_childcare |>
+  
+  rename(Infant = mc_infant,
+         Toddler = mc_toddler,
+         Preschool = mc_preschool) |>
+  
+  pivot_longer(cols = c(Infant, Toddler, Preschool), 
+               names_to = "age_group", 
+               values_to = "median_weekly_price") |>
+  
+  ggplot(mapping = aes(x = study_year, 
+                      y = median_weekly_price, 
+                      color = region)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth() +
+  facet_grid(.~age_group) +
+  labs(x = "Year",
+       y = "",
+       subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+       color = "Region") +
+  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
+  scale_y_continuous(breaks = seq(100, 500, by = 100)) +
+  theme_light() +
+  theme(aspect.ratio = 1, axis.text.x = element_text(size = 6),
+        legend.text = element_text(size = 8))
+
+#Lab 4 Question 6
 ```
 
 -   Example of **dplyr** pipeline
@@ -189,6 +448,17 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-2
 
+table <- ca_childcare |>
+  filter(study_year %in% c(2008,2018)) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018)) |>
+  pivot_wider(names_from = study_year, values_from = median_income) |>
+  rename("Year2008" = `2008`,
+         "Year2018" = `2018`) |>
+  arrange(desc(`2018`))
+
+#Lab 4 Question 4
+#Revision: Changing the name of the variables, because the name of 2008 or 2018 is very confusing to someone who did not work with the code
 ```
 
 -   Example of function formatting
@@ -223,12 +493,31 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-1-num
 
+ggplot(data = surveys, 
+       mapping = aes(
+         x = weight,
+         y = hindfoot_length,
+         alpha = 0.1)
+       ) +
+  geom_point() +
+  facet_wrap(.~species)+
+  labs(x = "Weight (g)", y = "", subtitle = "Hindfoot Length (mm)")
+
+#Lab 2 Question 4
+
 ```
 
 -   at least one numeric variable and one categorical variable
 
 ```{r}
 #| label: dvs-2-num-cat
+
+ggplot(data = ToothGrowth, 
+       mapping = aes(x = supp, y = len)) +
+  geom_boxplot() +
+  labs(x = "Supplement", y = "Length of Teeth (mm)")
+
+#Lab 1 Question 6
 
 ```
 
@@ -237,6 +526,22 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-cat
 
+palette <- c( "#e95081", "#318ce7", "#ffa4e9", "#f0a830", "#7b1e7a", "#1cceb7", "#008080", "#a1aac9", "#2c9c38")
+
+
+ggplot(data = surveys, 
+       mapping = aes(
+         x = species,
+         y = weight,
+         color = genus)
+       ) +
+  geom_boxplot(outliers = FALSE) +
+  geom_jitter(alpha = 0.1, aes(color = genus)) +
+  scale_color_manual(values = palette) +
+  theme(axis.text.x = element_text(angle = 45)) +  
+  labs(x = "Species", y = "", subtitle = "Weight (g)")
+
+#Challenge 2 Difficulty 2
 ```
 
 -   dates (timeseries plot)
@@ -253,12 +558,38 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-1
 
+ggplot(data = surveys, 
+       mapping = aes(
+         x = weight,
+         y = hindfoot_length,
+         alpha = 0.1)
+       ) +
+  geom_point() +
+  facet_wrap(.~species)+
+  labs(x = "Weight (g)", y = "", subtitle = "Hindfoot Length (mm)")
+
+#Lab 2 Question 4
+
 ```
 
 -   I can modify the text in my plot to be more readable
 
 ```{r}
 #| label: dvs-2-2
+
+ggplot(data = surveys, 
+       mapping = aes(
+         x = species,
+         y = weight,
+         color = genus)
+       ) +
+  geom_boxplot(outliers = FALSE) +
+  geom_jitter(alpha = 0.1, aes(color = genus)) +
+  scale_color_manual(values = palette) +
+  theme(axis.text.x = element_text(angle = 45)) +  
+  labs(x = "Species", y = "", subtitle = "Weight (g)")
+
+#Challenge 2 Difficulty 2
 
 ```
 
@@ -276,6 +607,22 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-3-1
 
+palette <- c( "#e95081", "#318ce7", "#ffa4e9", "#f0a830", "#7b1e7a", "#1cceb7", "#008080", "#a1aac9", "#2c9c38")
+
+ggplot(data = surveys, 
+       mapping = aes(
+         x = species,
+         y = weight,
+         color = genus)
+       ) +
+  geom_boxplot(outliers = FALSE) +
+  geom_jitter(alpha = 0.1, aes(color = genus)) +
+  scale_color_manual(values = palette) +
+  theme(axis.text.x = element_text(angle = 45)) +  
+  labs(x = "Species", y = "", subtitle = "Weight (g)")
+
+#Challenge 2 Difficulty 2
+
 ```
 
 -   I can use annotations
@@ -290,6 +637,22 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-3-3
 
+palette <- c( "#e95081", "#318ce7", "#ffa4e9", "#f0a830", "#7b1e7a", "#1cceb7", "#008080", "#a1aac9", "#2c9c38")
+
+ggplot(data = surveys, 
+       mapping = aes(
+         x = species,
+         y = weight,
+         color = genus)
+       ) +
+  geom_boxplot(outliers = FALSE) +
+  geom_jitter(alpha = 0.1, aes(color = genus)) +
+  scale_color_manual(values = palette) +
+  theme(axis.text.x = element_text(angle = 45)) +  
+  labs(x = "Species", y = "", subtitle = "Weight (g)")
+
+#Challenge 2 Difficulty 2
+
 ```
 
 **DVS-4: I can calculate numerical summaries of variables.**
@@ -298,6 +661,15 @@ I've done this in the following provided assignments:
 
 ```{r}
 #| label: dvs-4-summarize
+
+teacher_evals_clean |> 
+  filter(seniority >= 1) |>
+  group_by(teacher_id) |>
+  summarize(avgFail = mean(percent_failed_cur, na.rm = TRUE)) |>
+  filter(avgFail == min(avgFail) | avgFail == max(avgFail)) |>
+  arrange(avgFail)
+
+#Lab 3 Question 11
 
 ```
 
@@ -315,6 +687,14 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-5-1
 
+table <- ca_childcare |>
+  filter(study_year %in% c(2008,2018)) |>
+  group_by(region, study_year) |>
+  summarise(median_income = median(mhi_2018)) |>
+  pivot_wider(names_from = study_year, values_from = median_income) |>
+  arrange(desc(`2018`))
+
+#Lab 4 Question 4
 ```
 
 -   Example 2
@@ -322,6 +702,10 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-5-2
 
+  summarize(uniqueCourses = n_distinct(course_id), 
+            uniqueInstructors = n_distinct(teacher_id))
+
+#Lab 3 Question 6
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -365,12 +749,20 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: pe-1-one-call
 
+crime_scene_report |>
+    filter(date %in% "20180115",
+           type %in% "murder",
+           city %in% "SQL City")
+
+#Lab 5
+
 ```
 
 -   `across()`
 
 ```{r}
 #| label: pe-1-across
+
 
 ```
 
@@ -427,16 +819,69 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: pe-4-1
 
+ca_childcare |>
+  
+  rename(Infant = mc_infant,
+         Toddler = mc_toddler,
+         Preschool = mc_preschool) |>
+  
+  pivot_longer(cols = c(Infant, Toddler, Preschool), 
+               names_to = "age_group", 
+               values_to = "median_weekly_price") |>
+  
+  ggplot(mapping = aes(x = study_year, 
+                      y = median_weekly_price, 
+                      color = region)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth() +
+  facet_grid(.~age_group) +
+  labs(x = "Year",
+       y = "",
+       subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+       color = "Region") +
+  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
+  scale_y_continuous(breaks = seq(100, 500, by = 100)) +
+  theme_light() +
+  theme(aspect.ratio = 1, axis.text.x = element_text(size = 6),
+        legend.text = element_text(size = 8))
+
+#Lab 4 Question 6
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
 
 ```{r}
 #| label: pe-4-2
+ca_childcare |>
+  
+  rename(Infant = mc_infant,
+         Toddler = mc_toddler,
+         Preschool = mc_preschool) |>
+  
+  pivot_longer(cols = c(Infant, Toddler, Preschool), 
+               names_to = "age_group", 
+               values_to = "median_weekly_price") |>
+  
+  ggplot(mapping = aes(x = study_year, 
+                      y = median_weekly_price, 
+                      color = region)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth() +
+  facet_grid(.~age_group) +
+  labs(x = "Year",
+       y = "",
+       subtitle = "Weekly Median Price for Center-Based Childcare ($)",
+       color = "Region") +
+  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
+  scale_y_continuous(breaks = seq(100, 500, by = 100)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, axis.text.x = element_text(size = 6),
+        legend.text = element_text(size = 8))
 
+#Lab 4 Question 6
 ```
 
-## Data Simulation & Statisical Models
+## Data Simulation & Statistical Models
 
 **DSSM-1: I can simulate data from a *variety* of probability models.**
 
@@ -461,6 +906,12 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dsm-2-1
 
+species_mod <- aov(weight~species, data = surveys)
+
+summary(species_mod)
+
+#Lab 2 Question 17
+
 ```
 
 -   Example 2
@@ -474,14 +925,22 @@ I've done this in the following provided assignments:
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
 
+I revised my labs and challenges throughout this course. The vast majority of the code in the portfolio is post-revision, and typically is consisted of changing small mistakes that comes from misreading the problem, or an inefficiency or a bad way of conducting the cleaning of data.
+
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
 ## Extending My Thinking
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+I attempted the harder difficulty in the only challenge where I could choose a higher difficulty(Challenge 2). I think that I would do a harder difficulty in order to try to be more proficient in R, but there have not been too many challenges. I have not done too many difficult challenges, but I look forward to doing more in the second half of the class.
+
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
 
+![](images/clipboard-1763002388.png)
+
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
+
+I think that during group work, I worked well with my group mates. I think that I do try to do the developer/coder roles, but it does tend to fall apart a little when we encounter challenges. However, I think that I am not controlling and work well by communicating and being open to other ideas. I have learned to figure out problems and challenges with my group mates.
