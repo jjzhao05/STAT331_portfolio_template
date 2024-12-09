@@ -1,0 +1,110 @@
+---
+title: "Challenge 3: Extending Teaching Evaluation Investigations"
+author: "Jonathan Zhao"
+format: 
+  html:  
+    embed-resources: true
+    code-tools: true
+    toc: true
+editor: source
+execute: 
+  echo: true
+  warning: false
+  message: false
+  code-fold: true
+---
+
+# Chi-Square Test of Independence
+
+Let’s compare the level of SET ratings for Question 3 (The professor used
+activities to make the class more engaging.) between senior instructors and 
+junior instructors.
+
+**1. Create a new dataset (`teacher_evals_compare`) that accomplishes the following with _one_ `dplyr` pipeline:**
+
+- **includes responses for Question 3 only**
+- **creates a new variable called `SET_level` that is “excellent” if the `SET_score_avg` is 4 or higher (inclusive) and “standard” otherwise**
+- **creates a new variable called `sen_level` that is “junior” if `seniority` is 4 or less (inclusive) and “senior” otherwise** 
+- **contains only the variables we are interested in –- `course_id`, `SET_level`, and `sen_level`.**
+
+::: callout-tip
+Helpful functions: `filter()`, `mutate()`, `if_else()`, `select()`
+:::
+
+```{r}
+#| label: cleaning-data-for-junior-senior-comparison
+
+library(tidyverse)
+library(ggplot2)
+library(here)
+
+
+teacher_evals_compare <- read_csv(here("data", "teacher_evals.csv")) |>
+  mutate(SET_level = if_else(
+          SET_score_avg >= 4, "excellent", "standard"),
+        sen_level = if_else(
+          seniority <= 4, "junior", "senior")) |>
+  select(course_id, SET_level, sen_level)
+  
+# code chunk for Q12
+
+```
+
+**2. Using the new dataset and your `ggplot2` skills, recreate the filled bar plot shown below.**
+
+![](images/make_plot.png)
+
+
+::: callout-tip
+Helpful geometric object and arguments: `geom_bar(stat = ..., position = ...)`
+
+You **should not** have to do any more data manipulation to create this plot. 
+
+Note that getting the general structure and reader friendly labels is the first
+step. The next step is to figure out the labels of the bars and the theme of the
+plot.
+:::
+
+```{r}
+#| label: recreate-plot
+
+teacher_evals_compare |>
+  ggplot(aes(x = sen_level, fill = SET_level)) +
+    geom_bar() +
+  labs(x = "Seniority of Instructor", y ="", subtitle = "Number of Sections", fill = "SET level")
+# code chunk for Q13
+
+```
+
+**3. Look up the documentation for `chisq.test()` to carry out a chi-square test of independence between the SET level and instructor seniority level in your new dataset.**
+
+::: callout-tip
+Note that the `chisq.test()` function does not take a formula / data specification as we have seen before. You will need to extract the variables you wish to include in the analysis using a `$` (e.g., `evals$level$`).
+:::
+
+```{r}
+#| label: chi-square-test
+
+chiSquaredTest <- chisq.test(teacher_evals_compare $ SET_level, teacher_evals_compare $ sen_level)
+
+# code chunk for Q14
+
+```
+
+**4. Draw a conclusion about the independence of evaluation level and seniority level based on your chi-square test.**
+The p-value of the chi squared test is virtually 0, which means that there is significant evidence to reject the null and accept that there is an association between seniority and average SET score of teachers.
+
+# Study Critique
+
+Part of the impetus behind this study was to investigate characteristics of a
+course or an instructor that might affect student evaluations of teaching that
+are **not** explicitly related to teaching effectiveness. For instance, it has
+been shown that gender identity and gender express affect student evaluations of
+teaching ([an example](https://link.springer.com/article/10.1007/s10755-014-9313-4?nr_email_referer=1)).
+
+**5. If you were to conduct this study at Cal Poly, what are two other variables you would like to collect that you think might be related to student evaluations? These should be course or instructor characteristics that were not collected in this study.**
+
+While the gender was collected in this study, I think something that may be insightful and interesting would be the association with age, whether the age of a professor affects how their students may view them. I also think that race may play a part, as students may have a bias for or against particular races, even if it is not intentional.
+
+**6. Explain what effects / relationships you would expect to see for each of the two variables you outlined.**
+I am not sure what I would expect to see in reference to age. I think that the young age may mean inexperience, but older professors, while more experienced, may have other traits that make them less popular with students. I think that minorities would most likely have lower ratings.
