@@ -6,16 +6,22 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
+If Emi doesn't earn an A, then nobody should, because their code is well organized and efficient, and I think that they understand the material well.
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+1.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
+The most difficult part of this course was dealing with
 
-3. What was the easiest part of the class for you? Explain why.
+1.  What was the easiest part of the class for you? Explain why.
 
+I think the PA's were the easiest part of this class, I feel like having a partner was helpful to bounce around ideas with.
 
-4. What part of the class surprised or interested you the most? Explain why.
+1.  What part of the class surprised or interested you the most? Explain why.
 
+I found that the explanation of efficiency and how the code works behind the scenes is really interesting as I never knew how code actually worked.
 
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+1.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+
+Definitely try to do something well, rather than just doing something to finish it.
